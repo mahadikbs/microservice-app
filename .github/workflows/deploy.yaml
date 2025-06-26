@@ -16,6 +16,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Copy file
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{inputs.ec2_host}}  
+        username: ${{secrets.EC2_USER}}
+        key: ${{secrets.EC2_KEY}}
+        source: "db/softs.sh"
+        target: "/home/ec2-user/"
+
     - name: Deploy to EC2
       uses: appleboy/ssh-action@v0.1.10
       with:
@@ -23,6 +32,9 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_KEY }}
         script: |
+          cd /home/ec2-user
+          chmod +x softs.sh
+          sh softs.sh
           mkdir /home/${{ secrets.EC2_USER }}/microservices-app
           cd /home/${{ secrets.EC2_USER }}/microservices-app
           git pull origin main
