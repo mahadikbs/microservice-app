@@ -1,0 +1,29 @@
+name: Deploy to EC2
+
+on:
+  workflow_dispatch:
+    inputs:
+      ec2_host:
+        description: "EC2 IP address"
+        required: true
+        default: ' Enter EC2 public IP address'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ inputs.ec2_host }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_KEY }}
+        script: |
+          cd /home/${{ secrets.EC2_USER }}/microservices-app
+          git pull origin main
+          docker-compose down
+          docker-compose up -d --build
