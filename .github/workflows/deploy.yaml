@@ -33,8 +33,8 @@ jobs:
         key: ${{ secrets.EC2_KEY }}
         script: |
           cd /home/ec2-user
-          chmod +x softs.sh
-          sh softs.sh
+          chmod +x db/softs.sh
+          sh db/softs.sh
           mkdir /home/${{ secrets.EC2_USER }}/microservices-app
           cd /home/${{ secrets.EC2_USER }}/microservices-app
           git pull origin main
